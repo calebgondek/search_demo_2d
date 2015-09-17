@@ -39,6 +39,11 @@ class MapLoader:
         self.image = None
         self.map   = None
         self.color = False
+        self.scale = 1.0
+        self.x_axis = (0.0, 1.0)
+        self.y_axis=(0.0, 1.0)
+        self.x_range = 1.0
+        self.y_range = 1.0
 
     def addFrame(self, src_path, file):
         sourcepath=src_path+"/"+file
@@ -54,7 +59,8 @@ class MapLoader:
 
         return True
 
-    def createMap(self, scale = 1.0):
+    # Create discretized grid map from the input image with axis limits in Cartesian form
+    def createMap(self, scale = 1.0, x_axis = (0.0, 1.0), y_axis=(0.0, 1.0)):
         print "Create map from existing black (obstacle) and white image ..."
 
         self.map = np.zeros((self.image.shape[0],self.image.shape[1], 3) ,dtype=np.uint8)
@@ -69,11 +75,22 @@ class MapLoader:
                     self.map[i][j][1] = 192  # green is safe
                 else:
                     self.map[i][j][2] = 192  # red is obstacle
-
+        self.x_axis = x_axis
+        self.y_axis = y_axis
+        self.x_range = x_axis[1] - x_axis[0]
+        self.y_range = y_axis[1] - y_axis[0]
         if (scale != 1.0):
-            self.map = cv2.resize(self.map, (0,0),fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
+            self.map   = cv2.resize(self.map, (0,0),fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
+            self.scale = scale
         print "Done creating map!"
 
+    # Convert world reference point into an opencv index given map limits
+    def gridPoint(self, world_pt):
+        grid_pt = list(world_pt)
+        grid_pt[0] = int( ((world_pt[0] - self.x_axis[0])/self.x_range)*self.map.shape[1]);
+        grid_pt[1] = int(self.map.shape[0]*(1.0 - ((world_pt[1] - self.y_axis[0])/self.y_range)));
+        return (grid_pt[1], grid_pt[0]) # OpenCV uses (row, column) referencing from upper left
+        
     def plotPath(self, path, scale):
         self.path = deepcopy(self.map)
 
