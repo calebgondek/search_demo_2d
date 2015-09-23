@@ -34,7 +34,7 @@ from copy import deepcopy
 
 class MapLoader:
 
-    def __init__(self):
+    def __init__(self,safe_mode=True):
         self.current_image = -1
         self.image = None
         self.map   = None
@@ -44,6 +44,7 @@ class MapLoader:
         self.y_axis=(0.0, 1.0)
         self.x_range = 1.0
         self.y_range = 1.0
+        self.safe_mode = safe_mode
 
     def addFrame(self, src_path, file):
         sourcepath=src_path+"/"+file
@@ -66,22 +67,47 @@ class MapLoader:
         self.map = np.zeros((self.image.shape[0],self.image.shape[1], 3) ,dtype=np.uint8)
         print "  Create map = ",self.map.shape
 
-        for i in range(self.image.shape[0]):
-            for j in range(self.image.shape[1]):
-                self.map[i][j][0] =   0 #self.image[i][j][0]
-                self.map[i][j][1] =   0 #self.image[i][j][1]
-                self.map[i][j][2] =   0 #self.image[i][j][2]
-                if self.image[i][j][0] > 120: # white background is OK  (cv2 is BGR ordering)
-                    self.map[i][j][1] = 192  # green is safe
-                else:
-                    self.map[i][j][2] = 192  # red is obstacle
-        self.x_axis = x_axis
-        self.y_axis = y_axis
+        self.x_axis  = x_axis
+        self.y_axis  = y_axis
         self.x_range = x_axis[1] - x_axis[0]
         self.y_range = y_axis[1] - y_axis[0]
-        if (scale != 1.0):
-            self.map   = cv2.resize(self.map, (0,0),fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
-            self.scale = scale
+        self.scale   = scale
+
+        if (self.safe_mode):
+            # Conservative map creation
+            if (scale != 1.0):
+                self.map = cv2.resize(self.map, (0,0),fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
+
+            for i in range(self.image.shape[0]):
+                for j in range(self.image.shape[1]):
+                    if self.image[i][j][0] > 120: # white background is OK  (cv2 is BGR ordering)
+                        ix = int(i*scale);
+                        iy = int(j*scale);
+                        if (self.map[ix][iy][2] ==0):
+                            self.map[ix][iy][1] = 192  # green is safe
+                    else:
+                        ix = int(i*scale);
+                        iy = int(j*scale);
+                        self.map[ix][iy][1] =   0  # clear safe
+                        self.map[ix][iy][2] = 192  # red is obstacle
+
+
+        else:
+            # Simple image based map creation
+            # Image based map creation
+            for i in range(self.image.shape[0]):
+                for j in range(self.image.shape[1]):
+                    self.map[i][j][0] =   0 #self.image[i][j][0]
+                    self.map[i][j][1] =   0 #self.image[i][j][1]
+                    self.map[i][j][2] =   0 #self.image[i][j][2]
+                    if self.image[i][j][0] > 120: # white background is OK  (cv2 is BGR ordering)
+                        self.map[i][j][1] = 192  # green is safe
+                    else:
+                        self.map[i][j][2] = 192  # red is obstacle
+
+            if (scale != 1.0):
+                self.map = cv2.resize(self.map, (0,0),fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
+
         print "Done creating map!"
 
     # Convert world reference point into an opencv index given map limits

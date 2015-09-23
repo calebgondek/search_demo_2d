@@ -53,6 +53,7 @@ class GridProblem(Problem):
 
         print "map = ",self.map.shape
         print "scale = ",scale
+        self.scale = scale;
 
         # Define a video encoder to generate videos during the search process
         self.video_encoder =  video_encoder;
@@ -115,9 +116,8 @@ class GridProblem(Problem):
         if (self.video_encoder is not None):
             # Add video to encode the search behavior
             #print "actions=",actions
-            scale=0.1
-            big_map   = cv2.resize(self.map, (0,0),fx=(1.0/scale), fy=(1.0/scale), interpolation=cv2.INTER_NEAREST)
-            big_costs = cv2.resize(self.costs, (0,0),fx=(1.0/scale), fy=(1.0/scale), interpolation=cv2.INTER_NEAREST)
+            big_map   = cv2.resize(self.map, (0,0),fx=(1.0/self.scale),   fy=(1.0/self.scale), interpolation=cv2.INTER_NEAREST)
+            big_costs = cv2.resize(self.costs, (0,0),fx=(1.0/self.scale), fy=(1.0/self.scale), interpolation=cv2.INTER_NEAREST)
             cv2.imshow("Search ",big_map)
             cv2.imshow("Costs ", big_costs)
             cv2.waitKey(25)
@@ -211,7 +211,8 @@ map_loader = MapLoader() # Create a MapLoader to load the world map from a simpl
 base_image = "config_space_bw"  # This is the base file name of the input image for map generation
 map_loader.addFrame(".",base_image+".png")
 
-scale = 0.1
+scale = 0.25 # scale of map - smaller scale implies larger grid size
+
 map_loader.createMap(scale, (-np.pi, np.pi), (-np.pi, np.pi)) # Discretize the map based on the the scaling factor
 
 # Create a big version of discretized map for better visualization
