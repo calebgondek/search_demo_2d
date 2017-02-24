@@ -53,11 +53,11 @@ class VideoEncoder:
         self.video_out = None
         print "Video speed factor = ",self.fps_factor
         if (self.fps_factor > 0):
-            fourcc = cv2.cv.CV_FOURCC('m','p','4','v') # 'I', 'Y', 'U', 'V') # 'D', 'I', 'V', 'X') #  cv2.VideoWriter_fourcc(*'XVID')
+            fourcc = cv2.VideoWriter_fourcc('m','p','4','v') # 'I', 'Y', 'U', 'V') # 'D', 'I', 'V', 'X') #  cv2.VideoWriter_fourcc(*'XVID')
             print "Create video file at ",target_path+'.mp4'
 
             self.video_out  = cv2.VideoWriter(filename=target_path+'.mp4',##'/output.avi',
-                                              fourcc = cv2.cv.CV_FOURCC('m','p','4','v'), #'I', 'Y', 'U', 'V'),
+                                              fourcc = cv2.VideoWriter_fourcc('m','p','4','v'), #'I', 'Y', 'U', 'V'),
                                               fps=frame_rate,
                                               frameSize=(self.comp_frame.shape[1], self.comp_frame.shape[0]) ) # width,height
         else:
