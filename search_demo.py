@@ -246,21 +246,21 @@ goal=(28,24)
 
 
 # Define the test cases we want to run
-tests = [#("depth_first_",  depth_first_graph_search),
-         #("breadth_first_",breadth_first_search),
-         #("uniform_cost_", uniform_cost_search),
+tests = [("depth_first_",  depth_first_graph_search),
+         ("breadth_first_",breadth_first_search),
+         ("uniform_cost_", uniform_cost_search),
          ("astar_search_euclid_",    astar_search,0),
          ("astar_search_euclid2_",   astar_search,4),
          ("astar_search_euclid3_",   astar_search,5),
          ("astar_search_euclid025_", astar_search,6),
-         ("astar_search_euclid05_",  astar_search,7)]#,
-         #("astar_search_dx_",        astar_search,1),
-         #("astar_search_dy_",        astar_search,2),
-         #("astar_search_manhattan_", astar_search,3),
-         #("greedy_search_euclid_",   greedy_best_first_graph_search,0),
-         #("greedy_search_dx_",       greedy_best_first_graph_search,1),
-         #("greedy_search_dy_",       greedy_best_first_graph_search,2),
-         #("greedy_search_manhattan_",greedy_best_first_graph_search,3)   ]
+         ("astar_search_euclid05_",  astar_search,7),
+         ("astar_search_dx_",        astar_search,1),
+         ("astar_search_dy_",        astar_search,2),
+         ("astar_search_manhattan_", astar_search,3),
+         ("greedy_search_euclid_",   greedy_best_first_graph_search,0),
+         ("greedy_search_dx_",       greedy_best_first_graph_search,1),
+         ("greedy_search_dy_",       greedy_best_first_graph_search,2),
+         ("greedy_search_manhattan_",greedy_best_first_graph_search,3)   ]
 for test in tests:
     print "Set up the "+test[0]+" ..."
     file_name = target_dir+"/"+test[0]+base_image
@@ -333,7 +333,3 @@ for test in tests:
 
 
     cv2.waitKey(500)
-
-
-
-

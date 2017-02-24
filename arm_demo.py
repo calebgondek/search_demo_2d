@@ -273,7 +273,7 @@ tests = [#("depth_first_",  depth_first_graph_search),
 for test in tests:
     print "Set up the "+test[0]+" ..."
     file_name = target_dir+"/"+test[0]+base_image
-    video_encoder = VideoEncoder(file_name, map_loader.map, frame_rate = 30.0, fps_factor=1.0, comp_height=1.0/scale, comp_width=2.0/scale)
+    video_encoder = VideoEncoder(file_name, map_loader.map, frame_rate = 60.0, fps_factor=1.0, comp_height=1.0/scale, comp_width=2.0/scale)
 
     print "     output to ",file_name
     problem2 = GridProblem(start, goal, grid, map_loader.map,scale,video_encoder)
@@ -345,5 +345,3 @@ for test in tests:
 
 print "Done! - press return to exit"
 cv2.waitKey(5000)
-
-

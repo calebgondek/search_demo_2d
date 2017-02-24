@@ -116,7 +116,7 @@ class MapLoader:
         grid_pt[0] = int( ((world_pt[0] - self.x_axis[0])/self.x_range)*self.map.shape[1]);
         grid_pt[1] = int(self.map.shape[0]*(1.0 - ((world_pt[1] - self.y_axis[0])/self.y_range)));
         return (grid_pt[1], grid_pt[0]) # OpenCV uses (row, column) referencing from upper left
-        
+
     def plotPath(self, path, scale):
         self.path = deepcopy(self.map)
 
@@ -133,10 +133,12 @@ class MapLoader:
             scaled_point = (int(scaled_point[0]), int(scaled_point[1]))
 
             #print "plot path from",prior_point, " to ",scaled_point
-
-            # line is x,y  while point is (j,i) row major
-            cv2.line(self.path,(prior_point[1], prior_point[0]),
-                               (scaled_point[1], scaled_point[0]), color=(255,255,0),thickness=1)
+            diff = np.abs(prior_point[0] - scaled_point[0]) + np.abs(prior_point[1] - scaled_point[1])
+            if (diff < 10):
+                # line is x,y  while point is (j,i) row major
+                cv2.line(self.path,(prior_point[1], prior_point[0]),
+                                   (scaled_point[1], scaled_point[0]),
+                                   color=(255,255,0),thickness=1)
             prior_point = deepcopy(scaled_point)
           else:
               # Start
@@ -146,4 +148,3 @@ class MapLoader:
           # Start
           self.path[prior_point[0]][prior_point[1]][1] = 255
           self.path[prior_point[0]][prior_point[1]][2] = 255
-
