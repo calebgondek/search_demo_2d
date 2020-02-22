@@ -1,4 +1,4 @@
-#!/usr/bin/env, python
+#!/usr/bin/env, python3
 #-*-coding:-utf-8-*-
 
 #, Sat, Feb, 21, 2015, 15:36:02, GMT-0500, (EST)
@@ -279,4 +279,3 @@ def color_map(val):
 
   #print "values[",val,"] = ",values[val]
   return (values[val][3], values[val][2], values[val][1])
-

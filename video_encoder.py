@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
 
@@ -35,33 +35,33 @@ class VideoEncoder:
         # Define the codec and create VideoWriter object
 
         self.fps_factor = fps_factor
-        print "base image shape = ",img.shape
+        print("base image shape = ",img.shape)
 
         comp_frame = cv2.resize(img[:,:,:],(0,0),fx=comp_width,fy=comp_height)
         self.shape = comp_frame.shape
-        print "Composite frame size=",comp_frame.shape
+        print("Composite frame size=",comp_frame.shape)
 
         if ((len(self.shape) < 3) or (self.shape[2] == None) or (self.shape[2] == 1)):
             self.comp_frame = cv2.cvtColor(comp_frame, cv2.COLOR_GRAY2RGB)
         else:
             # Assume color image
-            print "Using color image in comp frame",comp_frame.shape
+            print("Using color image in comp frame",comp_frame.shape)
             self.comp_frame = comp_frame
 
-        print "composite video shape=",self.comp_frame.shape
+        print("composite video shape=",self.comp_frame.shape)
 
         self.video_out = None
-        print "Video speed factor = ",self.fps_factor
+        print("Video speed factor = ",self.fps_factor)
         if (self.fps_factor > 0):
             fourcc = cv2.VideoWriter_fourcc('m','p','4','v') # 'I', 'Y', 'U', 'V') # 'D', 'I', 'V', 'X') #  cv2.VideoWriter_fourcc(*'XVID')
-            print "Create video file at ",target_path+'.mp4'
+            print("Create video file at ",target_path+'.mp4')
 
             self.video_out  = cv2.VideoWriter(filename=target_path+'.mp4',##'/output.avi',
                                               fourcc = cv2.VideoWriter_fourcc('m','p','4','v'), #'I', 'Y', 'U', 'V'),
                                               fps=frame_rate,
                                               frameSize=(self.comp_frame.shape[1], self.comp_frame.shape[0]) ) # width,height
         else:
-            print "No video processing !"
+            print("No video processing !")
 
     def addDualFrame(self, expanded_img, cost_img):
 
@@ -86,14 +86,14 @@ class VideoEncoder:
         try:
             self.comp_frame[  :h1,  :w1,:d2] = expanded_img[:,:,:3]
         except Exception as msg:
-            print "Invalid composite frame with expanded!"
-            print msg
+            print("Invalid composite frame with expanded!")
+            print(msg)
             return False
         try:
             self.comp_frame[  :h1,w1:w2,:d2] = cost_img[:,:,:3]
         except Exception as msg:
-            print "Invalid composite frame with cost!"
-            print msg
+            print("Invalid composite frame with cost!")
+            print(msg)
             return False
 
         if (self.fps_factor > 0):
@@ -101,16 +101,16 @@ class VideoEncoder:
                 #print "write frame ..."
                 ret=self.video_out.write(self.comp_frame)
                 if ret:
-                    print "     video write ret=",ret
+                    print("     video write ret=",ret)
             except:
-                print "Failed to write a video frame!"
+                print("Failed to write a video frame!")
                 return None
 
         return self.comp_frame
 
     def release(self):
-        print " fps factor = ",self.fps_factor
+        print(" fps factor = ",self.fps_factor)
         if (self.fps_factor > 0):
-            print "Releasing the video capture ..."
-            print " Use\n   avconv -i output.avi -b 1440k test.avi\n to compress output video"
+            print("Releasing the video capture ...")
+            print(" Use\n   avconv -i output.avi -b 1440k test.avi\n to compress output video")
             self.video_out.release()

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 '''
 
@@ -39,6 +39,9 @@ from russell_and_norvig_search import *
 from color_map import color_map
 from video_encoder import VideoEncoder
 from map_loader import MapLoader
+import sys
+infinity=sys.maxsize
+
 
 class GridProblem(Problem):
     "The problem of searching a grid from one node to another."
@@ -51,8 +54,8 @@ class GridProblem(Problem):
 
         self.expansion = 0
 
-        print "map = ",self.map.shape
-        print "scale = ",scale
+        print("map = ",self.map.shape)
+        print("scale = ",scale)
 
         # Define a video encoder to generate videos during the search process
         self.video_encoder =  video_encoder;
@@ -123,7 +126,7 @@ class GridProblem(Problem):
             cv2.waitKey(25)
             self.video_encoder.addDualFrame(big_map, big_costs)
 
-        return self.graph.get(A).keys()
+        return list(self.graph.get(A).keys())
 
     def result(self, state, action):
         "The result of going to a neighbor is just that neighbor."
@@ -223,22 +226,22 @@ cv2.imshow("Big",  big_map)
 
 target_dir = "output"
 if not os.path.exists(target_dir):
-    print "Creating target directory <",target_dir,"> ..."
+    print("Creating target directory <",target_dir,"> ...")
     try:   os.makedirs(target_dir)
     except:
-        print "Failed to create target path!"
+        print("Failed to create target path!")
         exit()
 
-print "Writing the base images ..."
+print("Writing the base images ...")
 cv2.imwrite(target_dir+"/"+base_image+"_img.png",map_loader.image)
 cv2.imwrite(target_dir+"/"+base_image+"_map.png",map_loader.map)
 cv2.imwrite(target_dir+"/"+base_image+"_big_map.png",big_map)
 
-print "Wait for key input..."
+print("Wait for key input...")
 #cv2.waitKey()
 
 
-print "Doing the search ..."
+print("Doing the search ...")
 grid = UndirectedGraph()  # Using Russell and Norvig code
 
 start=(4,4)
@@ -262,15 +265,15 @@ tests = [("depth_first_",  depth_first_graph_search),
          ("greedy_search_dy_",       greedy_best_first_graph_search,2),
          ("greedy_search_manhattan_",greedy_best_first_graph_search,3)   ]
 for test in tests:
-    print "Set up the "+test[0]+" ..."
+    print("Set up the "+test[0]+" ...")
     file_name = target_dir+"/"+test[0]+base_image
     video_encoder = VideoEncoder(file_name, map_loader.map, frame_rate = 30.0, fps_factor=1.0, comp_height=1.0/scale, comp_width=2.0/scale)
 
-    print "     output to ",file_name
+    print("     output to ",file_name)
     problem2 = GridProblem(start, goal, grid, map_loader.map,scale,video_encoder)
 
     # Load the correct grid search algorithm and heuristics
-    print "------------- call ---------------------"
+    print("------------- call ---------------------")
     if (len(test) > 2):
         if (test[2] == 0):
            result, max_frontier_size = test[1](problem2, problem2.h_euclid)
@@ -297,11 +300,11 @@ for test in tests:
            result, max_frontier_size = test[1](problem2, problem2.h_euclid05)
         #
         else:
-           print "Help",test[2]
+           print("Help",test[2])
     else:
        result, max_frontier_size = test[1](problem2)
     #result,max_frontier_size=depth_first_graph_search(problem2)
-    print "-------------return---------------------"
+    print("-------------return---------------------")
 
 
     #result = depth_first_graph_search(problem2)
@@ -309,17 +312,17 @@ for test in tests:
     #result = uniform_cost_search(problem2)
     #@result = astar_search(problem2, h=problem2.h_euclid)#manhattan)#y_distance)
     ftxt = open(file_name+'.txt','w')
-    print "     Result=",result
-    print "     expansions = ",problem2.expansion
+    print("     Result=",result)
+    print("     expansions = ",problem2.expansion)
     ftxt.write("expansions = "+str(problem2.expansion)+"\n")
     ftxt.write("max frontier = "+str(max_frontier_size)+"\n")
     if (result is not None):
        path = result.path()
        ftxt.write("path cost="+str(problem2.total_path_cost(path))+"\n")
        ftxt.write("Path="+str(path)+"\n")
-       print "path cost=",problem2.total_path_cost(path)
-       print "Path=",path
-       print "Plotting path ..."
+       print("path cost=",problem2.total_path_cost(path))
+       print("Path=",path)
+       print("Plotting path ...")
        map_loader.plotPath(path, 1.0)# scale)
        big_path = cv2.resize(map_loader.path, (0,0),fx=(1.0/scale), fy=(1.0/scale), interpolation=cv2.INTER_LINEAR)
        cv2.imshow("Path",big_path)
@@ -328,7 +331,7 @@ for test in tests:
         ftxt.write('no path!')
     ftxt.close()
 
-    print "     Close the video ..."
+    print("     Close the video ...")
     problem2.video_encoder.release()
 
 

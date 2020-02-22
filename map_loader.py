@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 '''
  Search demonstrations using Python code from AI:MA by Russell and Norvig
@@ -49,23 +49,23 @@ class MapLoader:
     def addFrame(self, src_path, file):
         sourcepath=src_path+"/"+file
         try:
-            print "Add frame from "+sourcepath+" ..."
+            print("Add frame from "+sourcepath+" ...")
             self.image=cv2.imread(sourcepath,cv2.IMREAD_UNCHANGED)
             #print self.image
-            print "done!"
+            print("done!")
 
         except Exception as msg:
-            print msg
+            print(msg)
             return False
 
         return True
 
     # Create discretized grid map from the input image with axis limits in Cartesian form
     def createMap(self, scale = 1.0, x_axis = (0.0, 1.0), y_axis=(0.0, 1.0)):
-        print "Create map from existing black (obstacle) and white image ..."
+        print("Create map from existing black (obstacle) and white image ...")
 
         self.map = np.zeros((self.image.shape[0],self.image.shape[1], 3) ,dtype=np.uint8)
-        print "  Create map = ",self.map.shape
+        print("  Create map = ",self.map.shape)
 
         self.x_axis  = x_axis
         self.y_axis  = y_axis
@@ -108,7 +108,7 @@ class MapLoader:
             if (scale != 1.0):
                 self.map = cv2.resize(self.map, (0,0),fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
 
-        print "Done creating map!"
+        print("Done creating map!")
 
     # Convert world reference point into an opencv index given map limits
     def gridPoint(self, world_pt):
@@ -120,7 +120,7 @@ class MapLoader:
     def plotPath(self, path, scale):
         self.path = deepcopy(self.map)
 
-        print path[0].state
+        print(path[0].state)
         prior_point = list(path[0].state)
         prior_point[0] *= scale
         prior_point[1] *= scale
