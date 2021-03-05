@@ -77,14 +77,18 @@ class GridProblem(Problem):
                 if (i == 0 and j == 0): continue; # self reference
 
                 # Convert to global grid coordinates
-                ix = x + i
+                ix = x + i 
                 iy = y + j
 
                 # Keep it in bounds (assumes bounded world)
-                if (ix < 0): continue;
-                if (iy < 0): continue;
-                if (ix >= self.map.shape[0]): continue;
-                if (iy >= self.map.shape[1]): continue;
+                if (ix < 0): 
+			ix = self.map.shape[0] + ix 
+                if (iy < 0):
+			iy = self.map.shape[1] + iy
+                if (ix >= self.map.shape[0]):
+			ix = ix - self.map.shape[0]
+                if (iy >= self.map.shape[1]):
+			iy = iy - self.map.shape[1]
 
                 # Connect this node in the graph
                 B = (ix, iy)
@@ -259,9 +263,9 @@ tests = [#("depth_first_",  depth_first_graph_search),
          #("breadth_first_",breadth_first_search),
          #("uniform_cost_", uniform_cost_search),
          #("astar_search_euclid_",    astar_search,0),
-         ("astar_search_euclid2_",   astar_search,4)] #,
-         #("astar_search_euclid3_",   astar_search,5),
-         #("astar_search_euclid025_", astar_search,6),
+         #("astar_search_euclid2_",   astar_search,4)] #,
+          ("astar_search_euclid3_",   astar_search,5)] #,
+         #("astar_search_euclid025_", astar_search,6)]#,
          #("astar_search_euclid05_",  astar_search,7)]#,
          #("astar_search_dx_",        astar_search,1),
          #("astar_search_dy_",        astar_search,2),
